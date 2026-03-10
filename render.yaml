@@ -1,0 +1,8 @@
+services:
+  - type: worker
+    name: tiktok-otp-blaster-bot
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python bot.py
+    plan: standard
+    autoDeploy: true
