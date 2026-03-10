@@ -156,26 +156,13 @@ async def send_otp(session: aiohttp.ClientSession, number: str, proxy: str) -> d
         ) as resp:
             status = resp.status
             body   = await resp.text()
-
-            # ── Success detection ──────────────────────────────────────────
-            # TikTok returns either {"code":0,...} or {"message":"success",...}
-            body_lower = body.lower()
-            is_code_ok  = '"code":0' in body or '"code": 0' in body
-            is_msg_ok   = '"message":"success"' in body.replace(' ', '') \
-                          or '"message": "success"' in body
-            success = (status == 200) and (is_code_ok or is_msg_ok)
-
+            success = (status == 200 and '"code":0' in body)
             error_hint = None
             if not success:
-                import re as _re
-                m = _re.search(r'"message"\s*:\s*"([^"]{0,80})"', body)
-                raw_msg = m.group(1) if m else f"HTTP {status}"
-                # Don't show "success" as an error — it means our detection
-                # missed something; treat it as success instead
-                if raw_msg.lower() == "success":
-                    success = True
-                else:
-                    error_hint = raw_msg
+                # extract short error hint
+                import re
+                m = re.search(r'"message"\s*:\s*"([^"]{0,80})"', body)
+                error_hint = m.group(1) if m else f"HTTP {status}"
             return {"number": number, "status": status, "success": success, "error": error_hint}
     except asyncio.TimeoutError:
         return {"number": number, "status": None, "success": False, "error": "Timeout"}
