@@ -41,7 +41,7 @@ BOT_TOKEN = "8755279743:AAGiyCwUCPpXTUOFnEixMeLFyuZANYFwE9Y"
 
 DEFAULT_PROXY = "http://5cb45a72c8fec418a1f6__cr.id,it,gb,ua,pk,us:60a4de5bdc0192ac@gw.dataimpulse.com:823"
 
-INTERVAL_MINUTES = 30          # auto-repeat every N minutes
+INTERVAL_MINUTES = 120          # auto-repeat every N minutes
 SCHEDULER_JOB_NAME = "blast_job"
 
 # ─── CONVERSATION STATES ─────────────────────────────────────────────────────
@@ -194,7 +194,7 @@ async def blast_all(numbers: list[str], proxy: str) -> dict:
         ssl=False,
         ttl_dns_cache=300,
         use_dns_cache=True,
-        keepalive_timeout=30,
+        keepalive_timeout=120,
         enable_cleanup_closed=True,
     )
 
